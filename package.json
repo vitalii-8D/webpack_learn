@@ -1,0 +1,28 @@
+{
+  "name": "webpack_learn",
+  "version": "1.0.0",
+  "description": "webpack-course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitalii-8D/webpack_learn.git"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "webpack"
+  ],
+  "author": "Vitalii",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vitalii-8D/webpack_learn/issues"
+  },
+  "homepage": "https://github.com/vitalii-8D/webpack_learn#readme",
+  "devDependencies": {
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  }
+}
