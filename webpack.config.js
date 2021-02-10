@@ -2,6 +2,7 @@ const path = require('path');
 // Плагіни
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє папку dist
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
@@ -18,6 +19,26 @@ module.exports = {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist')
    },
+   resolve: {
+      // розширення за замовчуванням (можна не писати розширення в імпортах)
+      extensions: ['.js', '.json', '.png'],
+      // дозволяє прописати еліаси і робити за їх допомоги імпорти
+      alias: {
+         '@models': path.resolve(__dirname, 'src/models'),
+         '@': path.resolve(__dirname, 'src')
+      }
+   },
+   optimization: {
+      splitChunks: {
+         // виносе загальний код такий як бібліотеки в окремий файл, зменшуючи розмір модулів
+         chunks: "all"
+      }
+   },
+   devServer: {
+      // port: 4200,
+      hot: true,
+      contentBase: './dist'
+   },
    plugins: [
       // Без початкових налаштувань сам створює індекс файл та підключає всі скрипти
       // При створенні хешованих js айлів одразу підключає новостворені
@@ -25,13 +46,40 @@ module.exports = {
          // title: "Webpack Vitalik",  при template ключ title не задає заголовок
          template: "./index.html"
       }),
-      new CleanWebpackPlugin()
+      new CleanWebpackPlugin(),
+      // копіює вказані файли у вказану папку
+      new CopyWebpackPlugin({
+         patterns: [
+            {
+               from: path.resolve(__dirname, 'src/favicon.ico'),
+               to: path.resolve(__dirname, 'dist')
+            }
+         ]
+      })
    ],
    module: {
       rules: [
          {
             test: /\.css$/,
-            use: ['style-loader','css-loader']
+            use: ['style-loader', 'css-loader']
+         },
+         {
+            // цей лоадер імпортує картинку і автоматично в білді замість
+            // імпорту проставляє шлях до картинки
+            test: /\.(png|jpg|svg|gif)$/,
+            use: ['file-loader']
+         },
+         {
+            test: /\.(ttf|woff|woff2|eot)$/,
+            use: ['file-loader']
+         },
+         {
+            test: /\.xml$/,
+            use: ['xml-loader']
+         },
+         {
+            test: /\.csv$/,
+            use: ['csv-loader']
          }
       ]
    }
