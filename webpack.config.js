@@ -4,10 +4,12 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє папку dist
 
 module.exports = {
+   // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
+   context: path.resolve(__dirname, 'src'),
    mode: 'development',
    entry: {
-      main: './src/index.js',
-      analytics: './src/analytics.js'
+      main: './index.js',
+      analytics: './analytics.js'
    },
    output: {
       // [name] - патерн вставляє імена з entry вище
@@ -21,8 +23,17 @@ module.exports = {
       // При створенні хешованих js айлів одразу підключає новостворені
       new HTMLWebpackPlugin({
          // title: "Webpack Vitalik",  при template ключ title не задає заголовок
-         template: "./src/index.html"
+         template: "./index.html"
       }),
       new CleanWebpackPlugin()
-   ]
+   ],
+   module: {
+      rules: [
+         {
+            test: /\.css$/,
+            use: ['style-loader','css-loader']
+         }
+      ]
+   }
+
 }
