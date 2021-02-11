@@ -3,6 +3,7 @@ const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє папку dist
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
@@ -55,13 +56,22 @@ module.exports = {
                to: path.resolve(__dirname, 'dist')
             }
          ]
+      }),
+      new MiniCssExtractPlugin({
+         filename: '[name].[contenthash].css'
       })
    ],
    module: {
       rules: [
          {
             test: /\.css$/,
-            use: ['style-loader', 'css-loader']
+            // use: ['style-loader', 'css-loader']
+            use: [{
+               loader: MiniCssExtractPlugin.loader,
+               options: {
+                  publicPath: './src',
+               },
+            }, 'css-loader']
          },
          {
             // цей лоадер імпортує картинку і автоматично в білді замість
