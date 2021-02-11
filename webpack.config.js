@@ -4,10 +4,29 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє папку dist
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// мініфікатори css
+const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
-console.log(isDev);
+
+const optimization = () => {
+   let config = {
+      splitChunks: {
+         // виносе загальний код такий як бібліотеки в окремий файл, зменшуючи розмір модулів
+         chunks: "all"
+      }
+   }
+   if (isProd) {
+      config.minimizer = [
+         new OptimizeCssAssetWebpackPlugin(),
+         new TerserWebpackPlugin()
+      ]
+   }
+
+   return config
+}
 
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
@@ -33,12 +52,7 @@ module.exports = {
          '@': path.resolve(__dirname, 'src')
       }
    },
-   optimization: {
-      splitChunks: {
-         // виносе загальний код такий як бібліотеки в окремий файл, зменшуючи розмір модулів
-         chunks: "all"
-      }
-   },
+   optimization: optimization(),
    devServer: {
       // port: 4200,
       hot: isDev,
@@ -49,7 +63,11 @@ module.exports = {
       // При створенні хешованих js айлів одразу підключає новостворені
       new HTMLWebpackPlugin({
          // title: "Webpack Vitalik",  при template ключ title не задає заголовок
-         template: "./index.html"
+         template: "./index.html",
+         // Робить html дним рядочком
+         minify: {
+            collapseWhitespace: isProd
+         }
       }),
       new CleanWebpackPlugin(),
       // копіює вказані файли у вказану папку
