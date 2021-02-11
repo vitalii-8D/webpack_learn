@@ -5,6 +5,10 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const isDev = process.env.NODE_ENV === 'development';
+const isProd = process.env.NODE_ENV === 'production';
+console.log(isDev);
+
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
@@ -37,7 +41,7 @@ module.exports = {
    },
    devServer: {
       // port: 4200,
-      hot: true,
+      hot: isDev,
       contentBase: './dist'
    },
    plugins: [
