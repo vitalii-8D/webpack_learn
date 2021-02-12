@@ -108,34 +108,15 @@ module.exports = {
          {
             test: /\.css$/,
             // use: ['style-loader', 'css-loader']
-            use: [{
-               loader: MiniCssExtractPlugin.loader,
-               options: {
-                  publicPath: './',
-               },
-            }, 'css-loader']
+            use: cssLoaders()
          },
          {
             test: /\.less$/,
-            use: [
-               {
-                  loader: MiniCssExtractPlugin.loader,
-                  options: {
-                     publicPath: './',
-                  },
-               }, 'css-loader',
-               'less-loader']
+            use: cssLoaders('less-loader')
          },
          {
             test: /\.s[ac]ss$/,
-            use: [
-               {
-                  loader: MiniCssExtractPlugin.loader,
-                  options: {
-                     publicPath: './',
-                  },
-               }, 'css-loader',
-               'sass-loader']
+            use: cssLoaders('sass-loader')
          },
          {
             // цей лоадер імпортує картинку і автоматично в білді замість
