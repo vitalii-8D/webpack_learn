@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // мініфікатори css
 const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
@@ -81,6 +82,40 @@ const jsLoaders = () => {
    return loaders;
 }
 
+const plugins = () => {
+   const base = [
+      // Без початкових налаштувань сам створює індекс файл та підключає всі скрипти
+      // При створенні хешованих js айлів одразу підключає новостворені
+      new HTMLWebpackPlugin({
+         // title: "Webpack Vitalik",  при template ключ title не задає заголовок
+         template: "./index.html",
+         // Робить html дним рядочком
+         minify: {
+            collapseWhitespace: isProd
+         }
+      }),
+      new CleanWebpackPlugin(),
+      // копіює вказані файли у вказану папку
+      new CopyWebpackPlugin({
+         patterns: [
+            {
+               from: path.resolve(__dirname, 'src/favicon.ico'),
+               to: path.resolve(__dirname, 'dist')
+            }
+         ]
+      }),
+      new MiniCssExtractPlugin({
+         filename: filename('css')
+      })
+   ]
+
+   if (isProd) {
+      base.push(new BundleAnalyzerPlugin())
+   }
+
+   return base;
+}
+
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
@@ -114,32 +149,8 @@ module.exports = {
       contentBase: './dist'
    },
    // Ну соурс меп, ясно шо
-   devtool: isDev ? 'source-map' : '',
-   plugins: [
-      // Без початкових налаштувань сам створює індекс файл та підключає всі скрипти
-      // При створенні хешованих js айлів одразу підключає новостворені
-      new HTMLWebpackPlugin({
-         // title: "Webpack Vitalik",  при template ключ title не задає заголовок
-         template: "./index.html",
-         // Робить html дним рядочком
-         minify: {
-            collapseWhitespace: isProd
-         }
-      }),
-      new CleanWebpackPlugin(),
-      // копіює вказані файли у вказану папку
-      new CopyWebpackPlugin({
-         patterns: [
-            {
-               from: path.resolve(__dirname, 'src/favicon.ico'),
-               to: path.resolve(__dirname, 'dist')
-            }
-         ]
-      }),
-      new MiniCssExtractPlugin({
-         filename: filename('css')
-      })
-   ],
+   // devtool: isDev ? 'source-map' : '',
+   plugins: plugins(),
    module: {
       rules: [
          {

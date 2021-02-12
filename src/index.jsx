@@ -43,7 +43,7 @@ console.log('Post to string: ', post.toString());
 start().then(console.log)
 console.log(Util.id);
 
-// lodash - бібліотека для лейзі лоадінгу
+// lodash - бібліотека для динамічних імпортів (лейзі лоадінг)
 /*import('lodash').then(_ => {
    console.log('Lodash', _.random(0, 42, true))
 })*/
