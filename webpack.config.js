@@ -8,6 +8,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+// BrowserSync
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
@@ -112,6 +114,14 @@ const plugins = () => {
    if (isProd) {
       base.push(new BundleAnalyzerPlugin())
    }
+   if (isDev) {
+      base.push(new BrowserSyncPlugin({
+         // browse to http://localhost:3000/ during development,
+         host: 'localhost',
+         port: 3000,
+         server: { baseDir: ['dist'] }
+      }))
+   }
 
    return base;
 }
@@ -142,12 +152,12 @@ module.exports = {
       }
    },
    optimization: optimization(),
-   devServer: {
+   /*devServer: {
       // port: 4200,
       // Штука знизу не дає автоматично перезавантажуватись браузеру, тому закоментував
       // hot: isDev,
       contentBase: './dist'
-   },
+   },*/
    // Ну соурс меп, ясно шо
    // devtool: isDev ? 'source-map' : '',
    plugins: plugins(),
