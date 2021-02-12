@@ -74,7 +74,7 @@ module.exports = {
    mode: 'development',
    entry: {
       // '@babel/polyfill' потрібен для коректної обробки async запитів
-      main: ['@babel/polyfill', './index.js'],
+      main: ['@babel/polyfill', './index.jsx'],
       analytics: './analytics.ts'
    },
    output: {
@@ -100,6 +100,8 @@ module.exports = {
       // hot: isDev,
       contentBase: './dist'
    },
+   // Ну соурс меп, ясно шо
+   devtool: isDev ? 'source-map' : '',
    plugins: [
       // Без початкових налаштувань сам створює індекс файл та підключає всі скрипти
       // При створенні хешованих js айлів одразу підключає новостворені
@@ -175,7 +177,7 @@ module.exports = {
                options: babelOptions('@babel/preset-typescript')
             }
          },
-         {  // Type Script
+         {  // JSX react
             test: /\.jsx$/,
             exclude: /node_modules/,
             use: {
