@@ -28,9 +28,10 @@ const optimization = () => {
 
    return config
 }
-
+// В дев розробці нам не треба незрозумілі назви з хешами, тому робим так:
 const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
 
+// Функція яка тупо зменшує код нашого конфігу
 const cssLoaders = extra => {
    const loaders = [{
       loader: MiniCssExtractPlugin.loader,
@@ -45,6 +46,26 @@ const cssLoaders = extra => {
    }
 
    return loaders;
+}
+
+const babelOptions = preset => {
+   let options = {
+      presets: [
+         // цей пресет адаптує код під різні браузери, треба прописати в package.json властивість
+         // "browserslist": "> 0.25%, not dead",  або щось інакше з документашки
+         '@babel/preset-env'
+      ],
+      plugins: [
+         // для статичних полів в класах і т.д
+         '@babel/plugin-proposal-class-properties'
+      ]
+   }
+
+   if (preset) {
+      options.presets.push(preset);
+   }
+
+   return options;
 }
 
 module.exports = {
@@ -143,17 +164,7 @@ module.exports = {
             // loader: 'babel-loader'
             use: {
                loader: "babel-loader",
-               options: {
-                  presets: [
-                     // цей пресет адаптує код під різні браузери, треба прописати в package.json властивість
-                     // "browserslist": "> 0.25%, not dead",  або щось інакше з документашки
-                     '@babel/preset-env'
-                  ],
-                  plugins: [
-                     // для статичних полів в класах і т.д
-                     '@babel/plugin-proposal-class-properties'
-                  ]
-               }
+               options: babelOptions()
             }
          },
          {  // Type Script
@@ -161,17 +172,15 @@ module.exports = {
             exclude: /node_modules/,
             use: {
                loader: "babel-loader",
-               options: {
-                  presets: [
-                     '@babel/preset-env',
-                     // Ну це ясно, для typescript
-                     '@babel/preset-typescript'
-                  ],
-                  plugins: [
-                     // для статичних полів в класах і т.д
-                     '@babel/plugin-proposal-class-properties'
-                  ]
-               }
+               options: babelOptions('@babel/preset-typescript')
+            }
+         },
+         {  // Type Script
+            test: /\.jsx$/,
+            exclude: /node_modules/,
+            use: {
+               loader: "babel-loader",
+               options: babelOptions('@babel/preset-react')
             }
          }
       ]
