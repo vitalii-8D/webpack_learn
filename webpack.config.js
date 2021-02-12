@@ -52,7 +52,8 @@ module.exports = {
    context: path.resolve(__dirname, 'src'),
    mode: 'development',
    entry: {
-      main: './index.js',
+      // '@babel/polyfill' потрібен для коректної обробки async запитів
+      main: ['@babel/polyfill', './index.js'],
       analytics: './analytics.js'
    },
    output: {
@@ -135,6 +136,41 @@ module.exports = {
          {
             test: /\.csv$/,
             use: ['csv-loader']
+         },
+         {  // Стандартне підключення babel-loader і '@babel/preset-env'
+            test: /\.m?js$/,
+            exclude: /node_modules/,
+            // loader: 'babel-loader'
+            use: {
+               loader: "babel-loader",
+               options: {
+                  presets: [
+                     // цей пресет адаптує код під різні браузери, треба прописати в package.json властивість
+                     // "browserslist": "> 0.25%, not dead",  або щось інакше з документашки
+                     '@babel/preset-env'
+                  ],
+                  plugins: [
+                     // для статичних полів в класах і т.д
+                     '@babel/plugin-proposal-class-properties'
+                  ]
+               }
+            }
+         },
+         {  // Type Script
+            test: /\.ts$/,
+            exclude: /node_modules/,
+            use: {
+               loader: "babel-loader",
+               options: {
+                  presets: [
+                     '@babel/preset-env'
+                  ],
+                  plugins: [
+                     // для статичних полів в класах і т.д
+                     '@babel/plugin-proposal-class-properties'
+                  ]
+               }
+            }
          }
       ]
    }
