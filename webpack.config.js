@@ -31,6 +31,22 @@ const optimization = () => {
 
 const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
 
+const cssLoaders = extra => {
+   const loaders = [{
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+         publicPath: './',
+      },
+   }, 'css-loader'
+   ]
+
+   if (extra) {
+      loaders.push(extra);
+   }
+
+   return loaders;
+}
+
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
@@ -58,7 +74,8 @@ module.exports = {
    optimization: optimization(),
    devServer: {
       // port: 4200,
-      hot: isDev,
+      // Штука знизу не дає автоматично перезавантажуватись браузеру, тому закоментував
+      // hot: isDev,
       contentBase: './dist'
    },
    plugins: [
@@ -108,6 +125,17 @@ module.exports = {
                   },
                }, 'css-loader',
                'less-loader']
+         },
+         {
+            test: /\.s[ac]ss$/,
+            use: [
+               {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                     publicPath: './',
+                  },
+               }, 'css-loader',
+               'sass-loader']
          },
          {
             // цей лоадер імпортує картинку і автоматично в білді замість
