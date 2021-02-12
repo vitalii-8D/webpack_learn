@@ -68,6 +68,19 @@ const babelOptions = preset => {
    return options;
 }
 
+const jsLoaders = () => {
+   const loaders = [{
+      loader: "babel-loader",
+      options: babelOptions()
+   }]
+
+   if (isDev) {
+      loaders.push('eslint-loader');
+   }
+
+   return loaders;
+}
+
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
@@ -164,10 +177,7 @@ module.exports = {
             test: /\.m?js$/,
             exclude: /node_modules/,
             // loader: 'babel-loader'
-            use: {
-               loader: "babel-loader",
-               options: babelOptions()
-            }
+            use: jsLoaders()
          },
          {  // Type Script
             test: /\.ts$/,
