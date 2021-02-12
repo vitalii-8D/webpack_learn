@@ -54,7 +54,7 @@ module.exports = {
    entry: {
       // '@babel/polyfill' потрібен для коректної обробки async запитів
       main: ['@babel/polyfill', './index.js'],
-      analytics: './analytics.js'
+      analytics: './analytics.ts'
    },
    output: {
       // [name] - патерн вставляє імена з entry вище
@@ -163,7 +163,9 @@ module.exports = {
                loader: "babel-loader",
                options: {
                   presets: [
-                     '@babel/preset-env'
+                     '@babel/preset-env',
+                     // Ну це ясно, для typescript
+                     '@babel/preset-typescript'
                   ],
                   plugins: [
                      // для статичних полів в класах і т.д
