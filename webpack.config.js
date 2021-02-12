@@ -11,6 +11,7 @@ const TerserWebpackPlugin = require('terser-webpack-plugin')
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 
+// Функція додає мініфікатори файлів якщо збірка відбувається в режимі production
 const optimization = () => {
    let config = {
       splitChunks: {
@@ -28,6 +29,8 @@ const optimization = () => {
    return config
 }
 
+const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
+
 module.exports = {
    // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
@@ -40,7 +43,7 @@ module.exports = {
       // [name] - патерн вставляє імена з entry вище
       // filename: '[name].bundle.js',
       // [contenthash] - ставляє в назву новий хеш при білді якщо змінився вихідний файл
-      filename: '[name].[contenthash].js',
+      filename: filename('js'),
       path: path.resolve(__dirname, 'dist')
    },
    resolve: {
@@ -80,7 +83,7 @@ module.exports = {
          ]
       }),
       new MiniCssExtractPlugin({
-         filename: '[name].[contenthash].css'
+         filename: filename('css')
       })
    ],
    module: {
@@ -91,9 +94,20 @@ module.exports = {
             use: [{
                loader: MiniCssExtractPlugin.loader,
                options: {
-                  publicPath: './src',
+                  publicPath: './',
                },
             }, 'css-loader']
+         },
+         {
+            test: /\.less$/,
+            use: [
+               {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                     publicPath: './',
+                  },
+               }, 'css-loader',
+               'less-loader']
          },
          {
             // цей лоадер імпортує картинку і автоматично в білді замість
