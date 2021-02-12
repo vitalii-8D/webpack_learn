@@ -43,6 +43,11 @@ console.log('Post to string: ', post.toString());
 start().then(console.log)
 console.log(Util.id);
 
+// lodash - бібліотека для лейзі лоадінгу
+/*import('lodash').then(_ => {
+   console.log('Lodash', _.random(0, 42, true))
+})*/
+
 // console.log('JSON ', json);
 // console.log('XML ', xml);
 // console.log('CSV ', csv);
