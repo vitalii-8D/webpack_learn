@@ -1,3 +1,6 @@
+// For the first do the next:
+// npm i -D webpack webpack-cli
+
 const path = require('path');
 // Плагіни
 const HTMLWebpackPlugin = require('html-webpack-plugin');
@@ -5,8 +8,10 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // Видаляє 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // мініфікатори css
-const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+// Мінімізує й агліфає JS
 const TerserWebpackPlugin = require('terser-webpack-plugin')
+// Analizer
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 // BrowserSync
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
@@ -24,7 +29,7 @@ const optimization = () => {
    }
    if (isProd) {
       config.minimizer = [
-         new OptimizeCssAssetWebpackPlugin(),
+         new OptimizeCssAssetsWebpackPlugin(),
          new TerserWebpackPlugin()
       ]
    }
@@ -127,7 +132,8 @@ const plugins = () => {
 }
 
 module.exports = {
-   // вказує на папку з вихідними файлами. Тут далі src можна видалити з початку шляхів
+   // вказує на папку з вихідними файлами.
+   // Тут далі src можна видалити з початку шляхів
    context: path.resolve(__dirname, 'src'),
    mode: 'development',
    entry: {
@@ -218,5 +224,12 @@ module.exports = {
          }
       ]
    }
-
+   // Babel - basic
+   //npm install --save-dev babel-loader @babel/core
+   //npm install --save-dev @babel/preset-env
+      // needed to ad to loaders options: {presets: ["@babel/preset-env"]}
+   //npm install --save @babel/polyfill   not a devDep!!!
+      // needs to change entry: ['@babel/polyfill', './index.jsx'],
+   //npm install --save-dev @babel/plugin-proposal-class-properties
+      // needed to ad to loaders options: {plugins: ["@babel/plugin-proposal-class-properties"]}
 }
